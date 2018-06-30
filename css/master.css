@@ -5,6 +5,8 @@
 @import "common.css" screen;
 @import url('landscape.css') screen and (orientation:landscape);
 
+@import url('/css/base.css');
+
 .uppercase {
   text-transform: uppercase;
 }

@@ -3,7 +3,10 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"os"
+	"path"
 	"regexp"
+	"strings"
 )
 
 func main() {
@@ -14,10 +17,10 @@ func main() {
 
 	statement, _ := regexp.Compile("@import (.+);")
 
-	statement.ReplaceAllFunc(src, func(b []byte) []byte {
-		url, _ := regexp.Compile("url\\((?P<URL>.*?)\\)")
-		subs := url.FindSubmatch(b)
-		n := url.SubexpNames()
+	concat := statement.ReplaceAllFunc(src, func(b []byte) []byte {
+		urlRegex, _ := regexp.Compile("url\\((?P<URL>.*?)\\)")
+		subs := urlRegex.FindSubmatch(b)
+		n := urlRegex.SubexpNames()
 
 		paramsMap := make(map[string]string)
 		for i, name := range n {
@@ -26,10 +29,42 @@ func main() {
 			}
 		}
 
-		log.Printf("%+v", paramsMap)
+		// No URL then maybe its a standalone string
+		val, ok := paramsMap["URL"]
+		if !ok {
+			return b
+		}
 
-		// No URL then maybe its a standalone string.
+		// Clean up
+		val = strings.ToLower(val)
+		val = strings.TrimSpace(val)
+		val = strings.Replace(val, "\"", "", -1)
+		val = strings.Replace(val, "'", "", -1)
 
-		return b
+		// Skip URLs
+		if strings.Contains(val, "://") {
+			return b
+		}
+
+		// Skip relative paths
+		if !path.IsAbs(val) {
+			return b
+		}
+
+		wd, err := os.Getwd()
+		if err != nil {
+			return b
+		}
+		p := path.Join(wd, val)
+		css, err := ioutil.ReadFile(p)
+		if err != nil {
+			return b
+		}
+
+		log.Printf("Left with this: %+v | %+v", val, css)
+		return css
 	})
+
+	log.Printf("The concat: %+v", string(concat))
+
 }
