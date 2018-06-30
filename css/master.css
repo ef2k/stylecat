@@ -1,12 +1,15 @@
-@import url("fineprint.css") print;
-@import url("bluish.css") speech;
-@import 'custom.css';
+@import './css/base.css';
 @import url("chrome://communicator/skin/");
-@import "common.css" screen;
-@import url('landscape.css') screen and (orientation:landscape);
-
+@import "printstyle.css" print;
 @import url('/css/base.css');
+@import 'css/container.css';
+@import "mobstyle.css" screen and (max-width: 768px);
+@import 'css/invalid.css;
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.img {
+  content: url('css/grid.css');
 }

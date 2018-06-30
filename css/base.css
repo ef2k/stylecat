@@ -2,3 +2,5 @@
   --fg: black;
   --bg: white;
 }
+
+@import url('/css/grid.css');

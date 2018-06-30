@@ -1,0 +1,6 @@
+@import url('/css/container.css');
+
+.grid {
+  display: grid;
+}
+

@@ -5,12 +5,13 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
 
-func main() {
-	src, err := ioutil.ReadFile("css/master.css")
+func Concat(entryPath string) []byte {
+	src, err := ioutil.ReadFile(entryPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,7 +19,7 @@ func main() {
 	statement, _ := regexp.Compile("@import (.+);")
 
 	concat := statement.ReplaceAllFunc(src, func(b []byte) []byte {
-		urlRegex, _ := regexp.Compile("url\\((?P<URL>.*?)\\)")
+		urlRegex, _ := regexp.Compile(`\(?['"](?P<URL>.+)['"]\)?;`)
 		subs := urlRegex.FindSubmatch(b)
 		n := urlRegex.SubexpNames()
 
@@ -46,25 +47,25 @@ func main() {
 			return b
 		}
 
-		// Skip relative paths
-		if !path.IsAbs(val) {
-			return b
-		}
-
 		wd, err := os.Getwd()
 		if err != nil {
 			return b
 		}
-		p := path.Join(wd, val)
-		css, err := ioutil.ReadFile(p)
-		if err != nil {
-			return b
-		}
 
-		log.Printf("Left with this: %+v | %+v", val, css)
-		return css
+		p := path.Join(wd, val)
+		if !path.IsAbs(p) {
+			var err error
+			if p, err = filepath.Abs(p); err != nil {
+				return b
+			}
+		}
+		return Concat(p)
 	})
 
-	log.Printf("The concat: %+v", string(concat))
+	return concat
+}
 
+func main() {
+	src := Concat("css/master.css")
+	log.Printf("The concat: %+v", string(src))
 }
