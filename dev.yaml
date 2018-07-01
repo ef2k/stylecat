@@ -1,2 +1,2 @@
 tasks:
-  - cmd: go run main.go
+  - cmd: go test -v .
