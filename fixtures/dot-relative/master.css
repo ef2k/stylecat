@@ -1,0 +1,6 @@
+@import url("./base.css");
+
+h1 a {
+  color: var(--fg);
+  font-size: 0.9em;
+}

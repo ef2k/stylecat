@@ -1,6 +1,6 @@
 # stylecat :cat2:
 
-A Go package to concatenate CSS loaded by `@import` into a single stylesheet.
+A Go package to concatenate `@import` CSS references into a single stylesheet.
 
 **Usage**
 
@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-  src, err := stylecat.Run("/path/to/master.css")
+    src, err := stylecat.Run("/the/path/to/public/css/master.css")
 }
 ```
 

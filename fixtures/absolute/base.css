@@ -1,0 +1,12 @@
+@import url('/fixtures/absolute/fonts.css');
+@import url('/fixtures/absolute/container.css');
+@import url('/fixtures/absolute/grid.css');
+
+:root {
+  --fg: black;
+  --bg: white;
+}
+
+html, body {
+  font-family: Roboto, sans-serif;
+}

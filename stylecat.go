@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+type Config struct {
+	RootPath string
+}
+
 func getImportRegex() (*regexp.Regexp, error) {
 	return regexp.Compile("@import (.+);")
 }
@@ -39,7 +43,7 @@ func findImportPath(s []byte, rgx *regexp.Regexp) string {
 	return string(val)
 }
 
-func Run(entryPath string) ([]byte, error) {
+func Run(entryPath string, c *Config) ([]byte, error) {
 	src, err := ioutil.ReadFile(entryPath)
 	if err != nil {
 		return nil, err
@@ -62,8 +66,13 @@ func Run(entryPath string) ([]byte, error) {
 		}
 
 		base := filepath.Dir(entryPath)
+		if c != nil && c.RootPath != "" {
+			base = c.RootPath
+		}
+
 		p := path.Join(base, val)
-		result, err := Run(p)
+
+		result, err := Run(p, c)
 		if err != nil {
 			return b
 		}

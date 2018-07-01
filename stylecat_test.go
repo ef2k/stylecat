@@ -3,6 +3,7 @@ package stylecat
 import (
 	"bytes"
 	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -64,16 +65,51 @@ func TestFindImportPath(t *testing.T) {
 }
 
 func TestRun(t *testing.T) {
-	src, err := Run("fixtures/css/master.css")
-	if err != nil {
-		t.Fatal(err)
-	}
 	expected, err := ioutil.ReadFile("fixtures/expected.css")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if bytes.Compare(src, expected) != 0 {
-		t.Errorf("Expected concatenated outcome to be the same.")
-	}
+	t.Run("relative", func(t *testing.T) {
+		src, err := Run("fixtures/relative/master.css", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Compare(src, expected) != 0 {
+			t.Errorf("Expected concatenated outcome to be the same.")
+		}
+	})
+
+	t.Run("dot-relative", func(t *testing.T) {
+		src, err := Run("fixtures/dot-relative/master.css", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Compare(src, expected) != 0 {
+			t.Errorf("Expected concatenated outcome to be the same.")
+		}
+	})
+
+	t.Run("dot-relative-nested", func(t *testing.T) {
+		src, err := Run("fixtures/dot-relative-nested/master.css", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Compare(src, expected) != 0 {
+			t.Errorf("Expected concatenated outcome to be the same.")
+		}
+	})
+
+	t.Run("absolute", func(t *testing.T) {
+		cwd, _ := os.Getwd()
+		src, err := Run("fixtures/absolute/master.css", &Config{
+			RootPath: cwd,
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Compare(src, expected) != 0 {
+			t.Errorf("Expected concatenated outcome to be the same.")
+		}
+	})
 }
