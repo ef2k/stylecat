@@ -8,7 +8,15 @@ import (
 	"strings"
 )
 
+// Config configures stylecat.
 type Config struct {
+
+	// RootPath will set stylecat to use a fixed absolute path to determine the
+	// paths of imported CSS with absolute URL references.
+	// For example, `@import url('/css/base.css')` points to a root URL path that
+	// has a filesystem path at `/var/www/.../public/css/base.css`. Setting `RootPath`
+	// to `/var/www/.../public`, will resolve the correct path for the CSS references.
+	// Note that RootPath is only needed for @import paths that are absolute.
 	RootPath string
 }
 
@@ -43,6 +51,8 @@ func findImportPath(s []byte, rgx *regexp.Regexp) string {
 	return string(val)
 }
 
+// Run will concatenate all CSS files referenced by @import statements at the
+// given `entryPath`.
 func Run(entryPath string, c *Config) ([]byte, error) {
 	src, err := ioutil.ReadFile(entryPath)
 	if err != nil {

@@ -19,7 +19,7 @@ var cases = []struct {
 	// Match is true when a `@import...;` string is found.
 	Match bool
 
-	// Valid is true for accetable `@import ...;` statement paths.
+	// Valid is true for acceptable `@import ...;` statement paths.
 	Valid bool
 }{
 	{`@import url("fineprint.css") print;`, ``, true, false},
