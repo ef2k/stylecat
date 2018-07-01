@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-    src, err := stylecat.Run("/the/path/to/public/css/master.css")
+    src, err := stylecat.Run("/the/path/to/public/css/master.css", nil)
 }
 ```
 
