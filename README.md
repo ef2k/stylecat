@@ -16,7 +16,7 @@ func main() {
 
 When stylesheets link to **absolute paths** `e.g: /css/master.css`, set a `RootPath`:
 
-```
+```go
 src, err := stylecat.Run("/the/path/to/public/css/master.css", &stylecat.Config{
   RootPath: "/the/path/to/public"
 })
