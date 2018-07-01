@@ -1,6 +1,4 @@
-@import url('/css/container.css');
-
-.grid {
+.columns {
   display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
-

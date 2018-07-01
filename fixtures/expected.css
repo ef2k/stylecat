@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.container {
+  width: 320px;
+  margin: auto;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+
+:root {
+  --fg: black;
+  --bg: white;
+}
+
+html, body {
+  font-family: Roboto, sans-serif;
+}
+
+
+h1 a {
+  color: var(--fg);
+  font-size: 0.9em;
+}

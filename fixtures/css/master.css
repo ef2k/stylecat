@@ -1,15 +1,6 @@
-@import './css/base.css';
-@import url("chrome://communicator/skin/");
-@import "printstyle.css" print;
-@import url('/css/base.css');
-@import 'css/container.css';
-@import "mobstyle.css" screen and (max-width: 768px);
-@import 'css/invalid.css;
+@import url("base.css");
 
-.uppercase {
-  text-transform: uppercase;
-}
-
-.img {
-  content: url('css/grid.css');
+h1 a {
+  color: var(--fg);
+  font-size: 0.9em;
 }

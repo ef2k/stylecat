@@ -2,7 +2,6 @@ package stylecat
 
 import (
 	"io/ioutil"
-	"os"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -31,6 +30,12 @@ func findImportPath(s []byte, rgx *regexp.Regexp) string {
 	if !ok {
 		return ""
 	}
+
+	// URLs are invalid.
+	if strings.Contains(val, "://") {
+		return ""
+	}
+
 	return string(val)
 }
 
@@ -40,45 +45,24 @@ func Run(entryPath string) ([]byte, error) {
 		return nil, err
 	}
 
-	importPattern, err := getImportRegex()
+	importRgx, err := getImportRegex()
 	if err != nil {
 		return nil, err
 	}
 
-	concat := importPattern.ReplaceAllFunc(src, func(b []byte) []byte {
-		rgx, err := getPathRegex()
-		if err != nil {
-			return b
-		}
+	pathRgx, err := getPathRegex()
+	if err != nil {
+		return nil, err
+	}
 
-		val := findImportPath(b, rgx)
+	concat := importRgx.ReplaceAllFunc(src, func(b []byte) []byte {
+		val := findImportPath(b, pathRgx)
 		if val == "" {
 			return b
 		}
 
-		// Clean up
-		val = strings.ToLower(val)
-		val = strings.TrimSpace(val)
-		val = strings.Replace(val, "\"", "", -1)
-		val = strings.Replace(val, "'", "", -1)
-
-		// Skip URLs
-		if strings.Contains(val, "://") {
-			return b
-		}
-
-		wd, err := os.Getwd()
-		if err != nil {
-			return b
-		}
-
-		p := path.Join(wd, val)
-		if !path.IsAbs(p) {
-			var err error
-			if p, err = filepath.Abs(p); err != nil {
-				return b
-			}
-		}
+		base := filepath.Dir(entryPath)
+		p := path.Join(base, val)
 		result, err := Run(p)
 		if err != nil {
 			return b
