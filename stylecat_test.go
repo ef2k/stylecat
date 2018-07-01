@@ -113,3 +113,10 @@ func TestRun(t *testing.T) {
 		}
 	})
 }
+
+func TestRunErrors(t *testing.T) {
+	_, err := Run("/not/a/real/path", nil)
+	if err == nil {
+		t.Errorf("Expected an error on incorrect path")
+	}
+}
